@@ -3,6 +3,7 @@ const app = express();
 const path = require('path');
 const methodOverride = require('method-override');
 const { v4: uuidv4 } = require('uuid');
+const PORT = process.env.PORT || 8080;
 
 // PARSING MIDDLEWARE
 app.use(express.urlencoded({ extended: true }));
@@ -88,8 +89,8 @@ app.post('/tacos', (req, res) => {
     res.send(`OK, here are your ${qty} ${meat} tacos!`);
 })
 
-app.listen(3000, () => {
-    console.log("Listening on port 3000!");
+app.listen(PORT, () => {
+    console.log(`Listening on port ${PORT}!`);
 });
 
 /*
