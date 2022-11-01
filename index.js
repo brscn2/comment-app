@@ -11,7 +11,7 @@ const { MongoClient } = require("mongodb");
 const uri =
     "mongodb+srv://brscn:78952Gn@cluster0.k7xaqxb.mongodb.net/?retryWrites=true&w=majoritymongodb+srv://<user>:<password>@<cluster-url>?retryWrites=true&w=majority";
 
-const client = new MongoClient(uri);
+const client = new MongoClient(process.env.uri);
 const database = client.db("commentdb");
 const collection = database.collection("comments");
 
