@@ -6,7 +6,7 @@ const { v4: uuidv4 } = require('uuid');
 const { MongoClient } = require("mongodb");
 require('dotenv').config();
 const PORT = process.env.PORT || 8080
-// Replace the uri string with your connection string.
+// Replace the uri string with your connection string
 // const uri =
 //     "mongodb+srv://brscn:78952Gn@cluster0.k7xaqxb.mongodb.net/?retryWrites=true&w=majoritymongodb+srv://<user>:<password>@<cluster-url>?retryWrites=true&w=majority";
 
