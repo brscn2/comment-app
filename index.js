@@ -3,7 +3,18 @@ const app = express();
 const path = require('path');
 const methodOverride = require('method-override');
 const { v4: uuidv4 } = require('uuid');
-const PORT = process.env.PORT || 8080;
+// const PORT = process.env.PORT || 8080
+const PORT = 3000;
+
+const { MongoClient } = require("mongodb");
+
+// Replace the uri string with your connection string.
+const uri =
+    "mongodb+srv://brscn:78952Gn@cluster0.k7xaqxb.mongodb.net/?retryWrites=true&w=majoritymongodb+srv://<user>:<password>@<cluster-url>?retryWrites=true&w=majority";
+
+const client = new MongoClient(uri);
+const database = client.db("commentdb");
+const collection = database.collection("comments");
 
 // PARSING MIDDLEWARE
 app.use(express.urlencoded({ extended: true }));
@@ -16,30 +27,9 @@ app.set('view engine', 'ejs');
 // METHOD OVERRIDE
 app.use(methodOverride('_method'));
 
-let comments = [
-    {
-        id: uuidv4(),
-        username: 'Todd',
-        comment: 'lol that is so funny!'
-    },
-    {
-        id: uuidv4(),
-        username: 'Skyler',
-        comment: 'I like to go birdwatching with my dog.'
-    },
-    {
-        id: uuidv4(),
-        username: 'Sk8erBoi',
-        comment: 'Plz delete your account, Todd'
-    },
-    {
-        id: uuidv4(),
-        username: 'onlysayswoof',
-        comment: 'woof woof woof'
-    }
-]
-
-app.get('/comments', (req, res) => {
+app.get('/comments', async (req, res) => {
+    const cursor = collection.find({});
+    const comments = await cursor.toArray();
     res.render('comments/index', { comments });
 })
 
@@ -48,45 +38,40 @@ app.get('/comments/new', (req, res) => {
     res.render('comments/new');
 })
 
-app.post('/comments', (req, res) => {
+app.post('/comments', async (req, res) => {
     const { username, comment } = req.body;
-    comments.push({ id: uuidv4(), username: username, comment: comment });
+    const doc = { _id: uuidv4(), username: username, comment: comment };
+    const result = collection.insertOne(doc, { writeConcern: { w: "majority" , wtimeout: 5000 } });
+    console.log(
+        `A document was inserted with the _id: ${doc._id}`,
+    );
     res.redirect('/comments');
 })
 
-app.get('/comments/:id', (req, res) => {
+app.get('/comments/:id', async (req, res) => {
     const { id } = req.params;
-    const comment = comments.find(c => c.id === id);
+    const comment = await collection.findOne({ _id: id });
     res.render('comments/show', { comment });
 })
 
-app.patch('/comments/:id', (req, res) => {
+app.patch('/comments/:id', async (req, res) => {
     const { id } = req.params;
     const newCommentText = req.body.comment;
-    const foundComment = comments.find(c => c.id === id);
-    foundComment.comment = newCommentText;
-    res.redirect('/comments');
+    const result = await collection.updateOne({ _id: id }, { $set: { comment: newCommentText } }, { writeConcern: { w: "majority" , wtimeout: 5000 } });
+    if(result.acknowledged)
+        res.redirect("/comments");
 })
 
-app.get('/comments/:id/edit', (req, res) => {
+app.get('/comments/:id/edit', async (req, res) => {
     const { id } = req.params;
-    const comment = comments.find(c => c.id === id);
+    const comment = await collection.findOne({ _id: id });
     res.render('comments/edit', { comment });
 })
 
-app.delete('/comments/:id', (req, res) => {
+app.delete('/comments/:id', async (req, res) => {
     const { id } = req.params;
-    comments = comments.filter(c => c.id !== id);
+    const deleteResult = await collection.deleteOne({ _id: id }, { writeConcern: { w: "majority" , wtimeout: 5000 } });
     res.redirect('/comments');
-})
-
-app.get('/tacos', (req, res) => {
-    res.send("GET /tacos response");
-})
-
-app.post('/tacos', (req, res) => {
-    const { meat, qty } = req.body;
-    res.send(`OK, here are your ${qty} ${meat} tacos!`);
 })
 
 app.listen(PORT, () => {
