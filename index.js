@@ -7,10 +7,10 @@ const { MongoClient } = require("mongodb");
 require('dotenv').config();
 const PORT = process.env.PORT || 8080
 // Replace the uri string with your connection string.
-const uri =
-    "mongodb+srv://brscn:78952Gn@cluster0.k7xaqxb.mongodb.net/?retryWrites=true&w=majoritymongodb+srv://<user>:<password>@<cluster-url>?retryWrites=true&w=majority";
+// const uri =
+//     "mongodb+srv://brscn:78952Gn@cluster0.k7xaqxb.mongodb.net/?retryWrites=true&w=majoritymongodb+srv://<user>:<password>@<cluster-url>?retryWrites=true&w=majority";
 
-const client = new MongoClient(process.env.uri);
+const client = new MongoClient(process.env.MONGODB_URI);
 const database = client.db("commentdb");
 const collection = database.collection("comments");
 
@@ -39,7 +39,7 @@ app.get('/comments/new', (req, res) => {
 app.post('/comments', async (req, res) => {
     const { username, comment } = req.body;
     const doc = { _id: uuidv4(), username: username, comment: comment };
-    const result = collection.insertOne(doc, { writeConcern: { w: "majority" , wtimeout: 5000 } });
+    const result = collection.insertOne(doc, { writeConcern: { w: "majority", wtimeout: 5000 } });
     console.log(
         `A document was inserted with the _id: ${doc._id}`,
     );
@@ -55,8 +55,8 @@ app.get('/comments/:id', async (req, res) => {
 app.patch('/comments/:id', async (req, res) => {
     const { id } = req.params;
     const newCommentText = req.body.comment;
-    const result = await collection.updateOne({ _id: id }, { $set: { comment: newCommentText } }, { writeConcern: { w: "majority" , wtimeout: 5000 } });
-    if(result.acknowledged)
+    const result = await collection.updateOne({ _id: id }, { $set: { comment: newCommentText } }, { writeConcern: { w: "majority", wtimeout: 5000 } });
+    if (result.acknowledged)
         res.redirect("/comments");
 })
 
@@ -68,7 +68,7 @@ app.get('/comments/:id/edit', async (req, res) => {
 
 app.delete('/comments/:id', async (req, res) => {
     const { id } = req.params;
-    const deleteResult = await collection.deleteOne({ _id: id }, { writeConcern: { w: "majority" , wtimeout: 5000 } });
+    const deleteResult = await collection.deleteOne({ _id: id }, { writeConcern: { w: "majority", wtimeout: 5000 } });
     res.redirect('/comments');
 })
 
