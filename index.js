@@ -73,7 +73,7 @@ app.delete('/comments/:id', async (req, res) => {
 })
 
 app.get('/', (req, res) => {
-    res.render('/comments');
+    res.redirect('/comments');
 })
 
 app.listen(PORT, () => {
