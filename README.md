@@ -12,10 +12,9 @@ The API satisfies basic CRUD operations and is built using Express for different
 Each comment has an unique ID generated via uuidv4 and is stored in a No-SQL database using MongoDB.
 
 I am still working on this app. Some features currently on my to-do list are:
-    - User authentication
-    - Comment liking
-    - Sorting of comments by different categories
-    - Improvements to the front-end
-    ...
+- [ ] User authentication
+- [ ] Comment liking
+- [ ] Sorting of comments by various categories
+- [ ] Improvements to the front end...
     
 This app is for me to practice what I have learned in the field of web development. 
