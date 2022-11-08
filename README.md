@@ -1,5 +1,5 @@
 # comment-app
-A comment-app coded using NodeJS, Express, MongoDB, Bootstrap for practicing backend development, building a REST API and routing.
+A comment-app coded using NodeJS, Express, EJS, MongoDB, Bootstrap for practicing backend development, building a REST API and routing.
 
 The API satisfies basic CRUD operations and is built using Express for different views.
 
